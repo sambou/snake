@@ -1,0 +1,15 @@
+{
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "Play Snake in your terminal",
+  "main": "src/snake.js",
+  "dependencies": {
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/snake.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
