@@ -1,12 +1,12 @@
-const { WIDTH, HEIGHT, KEYS } = require('../../config');
 const { range } = require('ramda');
+const { KEYS } = require('./config');
 
 function render(state) {
   // clear screen
   process.stdout.write('\033c');
 
   // generate grid
-  const grid = range(0, HEIGHT).map(i => range(0, WIDTH).map(_ => '.'));
+  const grid = range(0, state.height).map(i => range(0, state.width).map(_ => '.'));
 
   // render player
   state.tail.forEach(({ x, y }) => (grid[y][x] = '◼︎'));

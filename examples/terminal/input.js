@@ -1,6 +1,6 @@
 const readline = require('readline');
-const { restart, goUp, goDown, goLeft, goRight } = require('../../logic/actions');
-const { KEYS } = require('../../config');
+const { actions: { restart, goUp, goDown, goLeft, goRight } } = require('snake');
+const { KEYS } = require('./config');
 
 function initInput(dispatch) {
   readline.emitKeypressEvents(process.stdin);

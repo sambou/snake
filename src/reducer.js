@@ -1,7 +1,8 @@
-const { compose, contains, drop, dropLast, pick, prepend, remove } = require('ramda');
-const { WIDTH, HEIGHT } = require('../config');
+const { assoc, compose, contains, drop, dropLast, pick, prepend, remove } = require('ramda');
 
 const initialState = {
+  width: 10,
+  height: 10,
   x: 5,
   y: 5,
   tail: [],
@@ -21,16 +22,13 @@ const handleAdvance = compose(
 
 const getPlayerPos = pick(['x', 'y']);
 
-function reducer(state, action) {
+function reducer(state = initialState, action) {
   switch (action.type) {
     case 'ADVANCE': {
       return handleAdvance(state);
     }
     case 'CHANGE_DIRECTION': {
-      return {
-        ...state,
-        direction: action.direction,
-      };
+      return assoc('direction', action.direction, state);
     }
     case 'RESTART': {
       return initialState;
@@ -44,28 +42,16 @@ function reducer(state, action) {
 function calculateNextPosition(state) {
   switch (state.direction) {
     case 'left': {
-      return {
-        ...state,
-        x: state.x - 1,
-      };
+      return assoc('x', state.x - 1, state);
     }
     case 'right': {
-      return {
-        ...state,
-        x: state.x + 1,
-      };
+      return assoc('x', state.x + 1, state);
     }
     case 'up': {
-      return {
-        ...state,
-        y: state.y - 1,
-      };
+      return assoc('y', state.y - 1, state);
     }
     case 'down': {
-      return {
-        ...state,
-        y: state.y + 1,
-      };
+      return assoc('y', state.y + 1, state);
     }
   }
 }
@@ -85,12 +71,11 @@ function handleItemCollision(state) {
 
     const score = state.score + 1;
 
-    return {
-      ...state,
+    return Object.assign({}, state, {
       items,
       tail,
       score,
-    };
+    });
   } else {
     return state;
   }
@@ -98,31 +83,25 @@ function handleItemCollision(state) {
 
 function handleEdgeCollision(state) {
   if (state.x < 0) {
-    return { ...state, x: WIDTH - 1 };
-  } else if (state.x >= WIDTH) {
-    return { ...state, x: 0 };
+    return assoc('x', state.width - 1, state);
+  } else if (state.x >= state.height) {
+    return assoc('x', 0, state);
   } else if (state.y < 0) {
-    return { ...state, y: HEIGHT - 1 };
-  } else if (state.y >= HEIGHT) {
-    return { ...state, y: 0 };
+    return assoc('y', state.height - 1, state);
+  } else if (state.y >= state.width) {
+    return assoc('y', 0, state);
   } else {
     return state;
   }
 }
 
 function handleAdvancePosition(state) {
-  return {
-    ...state,
-    tail: prepend(getPlayerPos(state), dropLast(1, state.tail)),
-  };
+  return assoc('tail', prepend(getPlayerPos(state), dropLast(1, state.tail)), state);
 }
 
 function handleGameOver(state) {
   if (contains(getPlayerPos(state), drop(1, state.tail))) {
-    return {
-      ...state,
-      status: 'over',
-    };
+    return assoc('status', 'over', state);
   } else {
     return state;
   }
@@ -130,11 +109,12 @@ function handleGameOver(state) {
 
 function getRandomItem(state) {
   const pos = {
-    x: Math.round((WIDTH - 1) * Math.random()),
-    y: Math.round((HEIGHT - 1) * Math.random()),
+    x: Math.round((state.width - 1) * Math.random()),
+    y: Math.round((state.height - 1) * Math.random()),
   };
+  const inPos = contains(pos);
 
-  if (contains(pos, state.items) || contains(pos, state.tail)) {
+  if (inPos(state.items) || inPos(state.tail)) {
     return getRandomItem(state);
   } else {
     return pos;

@@ -1,7 +1,7 @@
-const { initInput, render } = require('./view/terminal');
-const { reducer, initialState } = require('./logic/reducer');
-const { advance } = require('./logic/actions');
+const { initInput } = require('./input');
+const render = require('./render');
 const { GAME_SPEED } = require('./config');
+const { reducer, initialState, actions } = require('snake');
 
 function startGame() {
   let state = initialState;
@@ -12,7 +12,7 @@ function startGame() {
 
   function loop() {
     if (state.status !== 'over') {
-      dispatch(advance());
+      dispatch(actions.advance());
     }
     render(state);
   }

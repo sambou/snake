@@ -2,13 +2,14 @@
   "name": "snake",
   "version": "1.0.0",
   "description": "Play Snake in your terminal",
-  "main": "src/snake.js",
+  "main": "src/index.js",
   "dependencies": {
     "ramda": "^0.25.0"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node src/snake.js"
+    "run-term": "node examples/terminal/index.js",
+    "run-react": "cd examples/react-snake/ && yarn start"
   },
   "author": "",
   "license": "ISC"
